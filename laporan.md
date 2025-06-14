@@ -95,19 +95,59 @@ Histogram menunjukkan bahwa fitur `age` dan `trestbps` terdistribusi mendekati n
 
 Tahap ini berfokus pada pelatihan, perbandingan, dan optimisasi model machine learning.
 
-### Perbandingan Model Awal
-Dua model awal dievaluasi untuk mendapatkan performa dasar:
-1.  **K-Nearest Neighbors (KNN)**: Model ini menghasilkan **F1-Score 0.87** untuk kelas positif.
-2.  **Random Forest**: Model ini menghasilkan **F1-Score 0.88** untuk kelas positif.
+### K-Nearest Neighbors (KNN)
 
-Berdasarkan perbandingan F1-Score dan Recall (0.90), **Random Forest dipilih sebagai model awal terbaik**.
+**Cara Kerja Algoritma**
+K-Nearest Neighbors (KNN) adalah algoritma *supervised learning* yang bekerja berdasarkan prinsip "kesamaan". Untuk mengklasifikasikan sebuah data baru, algoritma ini akan mencari 'K' jumlah tetangga terdekat dari data tersebut di dalam data latih, berdasarkan perhitungan jarak (misalnya, Jarak Euclidean atau Manhattan). Kelas dari data baru kemudian ditentukan oleh suara mayoritas (voting) dari kelas-kelas para tetangga terdekatnya.
 
-### Eksperimen Hyperparameter Tuning
-Sebagai bagian dari solusi, dilakukan eksperimen optimisasi pada model KNN menggunakan `GridSearchCV` untuk melihat apakah performanya dapat ditingkatkan hingga melampaui Random Forest.
-- **Parameter Terbaik Ditemukan**: `{'metric': 'manhattan', 'n_neighbors': 13, 'weights': 'uniform'}`.
-- **Hasil**: Model KNN yang telah di-tuning menghasilkan F1-Score **0.85** pada data uji.
+**Parameter dan Pelatihan Model Awal**
+Model KNN awal dilatih menggunakan parameter default dari library scikit-learn, dengan parameter utama yang ditetapkan secara eksplisit adalah:
+-   `n_neighbors=5`
 
-Hasil ini mengkonfirmasi bahwa proses tuning pada KNN tidak berhasil melampaui performa model Random Forest awal. Dengan demikian, **Random Forest** ditetapkan sebagai model final.
+**Kelebihan dan Kekurangan**
+-   **Kelebihan**:
+    -   Sederhana untuk dipahami dan diimplementasikan.
+    -   Tidak memerlukan asumsi tentang distribusi data (non-parametrik).
+    -   Efektif untuk data yang tidak terlalu besar.
+-   **Kekurangan**:
+    -   Sangat sensitif terhadap skala fitur, sehingga memerlukan *feature scaling*.
+    -   Biaya komputasi menjadi tinggi saat proses prediksi karena perlu menghitung jarak ke semua data latih.
+    -   Performa dapat menurun pada dataset dengan dimensi (jumlah fitur) yang sangat tinggi.
+
+Hasil evaluasi awal pada data uji menunjukkan model ini menghasilkan **F1-Score 0.87** untuk kelas positif.
+
+### Random Forest
+
+**Cara Kerja Algoritma**
+Random Forest adalah algoritma *ensemble learning* yang terdiri dari banyak *decision tree* (pohon keputusan). Prosesnya dimulai dengan membuat sejumlah besar pohon keputusan secara acak, di mana setiap pohon dilatih pada sampel data yang sedikit berbeda (teknik *bootstrap aggregating* atau *bagging*). Untuk membuat prediksi klasifikasi, setiap pohon di dalam "hutan" akan memberikan suaranya (voting), dan kelas dengan suara terbanyak akan menjadi hasil prediksi akhir dari model.
+
+**Parameter dan Pelatihan Model Awal**
+Model Random Forest awal dilatih dengan parameter berikut:
+-   `n_estimators=100` (jumlah pohon keputusan yang dibangun).
+-   `random_state=42` (untuk memastikan hasil yang dapat direproduksi).
+
+**Kelebihan dan Kekurangan**
+-   **Kelebihan**:
+    -   Memiliki akurasi yang tinggi dan cenderung sangat robust terhadap *overfitting*.
+    -   Dapat menangani data dalam jumlah besar dengan fitur yang banyak.
+    -   Mampu memberikan peringkat pentingnya setiap fitur (*feature importance*).
+-   **Kekurangan**:
+    -   Cenderung menjadi "black box", artinya proses pengambilan keputusannya lebih sulit diinterpretasikan dibandingkan satu decision tree.
+    -   Membutuhkan lebih banyak sumber daya komputasi dan waktu untuk melatih model karena membangun banyak pohon.
+
+Hasil evaluasi awal pada data uji menunjukkan model ini menghasilkan **F1-Score 0.88** untuk kelas positif.
+
+### Pemilihan Model dan Eksperimen Optimisasi
+
+**Pemilihan Model Terbaik**
+Berdasarkan perbandingan F1-Score awal (Random Forest: 0.88 vs. KNN: 0.87), **Random Forest dipilih sebagai model terbaik** karena menunjukkan performa yang sedikit lebih unggul.
+
+**Eksperimen Hyperparameter Tuning**
+Sebagai bagian dari *solution statement*, sebuah eksperimen optimisasi tetap dilakukan pada model KNN menggunakan `GridSearchCV` untuk melihat apakah performanya dapat ditingkatkan hingga melampaui Random Forest. 
+-   **Parameter Terbaik Ditemukan**: `{'metric': 'manhattan', 'n_neighbors': 13, 'weights': 'uniform'}`.
+-   **Hasil**: Model KNN yang telah di-tuning dievaluasi dan menghasilkan **F1-Score 0.85** pada data uji.
+
+Hasil eksperimen ini mengkonfirmasi bahwa proses tuning pada KNN tidak berhasil melampaui performa model Random Forest awal. Dengan demikian, **Random Forest** ditetapkan sebagai model final untuk dievaluasi lebih lanjut.
 
 ## Evaluation
 
