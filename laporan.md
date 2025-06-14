@@ -155,13 +155,20 @@ Evaluasi final dilakukan pada model dengan performa terbaik, yaitu **model Rando
 
 ### Metrik Evaluasi
 - **Accuracy**: Rasio prediksi yang benar terhadap total data.
-  $$ \text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}} $$
+
+$$ \text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}} $$
+
 - **Precision**: Dari semua yang diprediksi sakit, berapa persen yang benar-benar sakit.
-  $$ \text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}} $$
+
+$$ \text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}} $$
+
 - **Recall (Sensitivity)**: Dari semua yang benar-benar sakit, berapa persen yang berhasil terdeteksi.
-  $$ \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}} $$
+
+$$ \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}} $$
+
 - **F1-Score**: Rata-rata harmonik dari Precision dan Recall.
-  $$ \text{F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} $$
+
+$$ \text{F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} $$
 
 ### Hasil Evaluasi Model Final
 Berikut adalah rekapitulasi hasil dari model **Random Forest** yang terpilih:
