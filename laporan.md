@@ -78,17 +78,18 @@ Analisis eksplorasi dilakukan pada data yang telah dibersihkan untuk mendapatkan
 #### Distribusi Target
 Visualisasi distribusi variabel target (`target`) menunjukkan dataset yang cukup seimbang, terdiri dari **526 sampel (57%)** untuk kelas "sakit" dan **394 sampel (43%)** untuk kelas "sehat".
 
-![Distribusi Pasien dengan dan Tanpa Penyakit Jantung](https://imgur.com/40Alz6D)
+![Distribusi Target](https://github.com/user-attachments/assets/214cd1c7-ed7f-4237-8a04-4e01f4554998)
 
 #### Analisis Korelasi Fitur
 *Heatmap* korelasi menunjukkan bahwa fitur `cp`, `thalch`, dan `slope` memiliki korelasi positif yang kuat dengan target, sementara `thal`, `ca`, `oldpeak`, dan `exang` memiliki korelasi negatif yang kuat.
 
-![Heatmap Korelasi Antar Fitur](https://imgur.com/kVNNDUU)
+![Heatmap Fitur](https://github.com/user-attachments/assets/98c25945-ec49-4335-a701-307dacc6c197)
+
 
 #### Distribusi Fitur Numerik
 Histogram menunjukkan bahwa fitur `age` dan `trestbps` terdistribusi mendekati normal, sedangkan `oldpeak` sangat miring ke kanan (*right-skewed*).
 
-![Distribusi Fitur Numerik (age, trestbps, chol, thalach, oldpeak)](https://imgur.com/6D5RUmL)
+![Distribusi Fitur Numerik](https://github.com/user-attachments/assets/aa207fe0-8fb8-4987-ae9d-24feedf1e731)
 
 ## Modeling
 
