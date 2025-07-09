@@ -78,35 +78,76 @@ Analisis eksplorasi dilakukan pada data yang telah dibersihkan untuk mendapatkan
 #### Distribusi Target
 Visualisasi distribusi variabel target (`target`) menunjukkan dataset yang cukup seimbang, terdiri dari **526 sampel (57%)** untuk kelas "sakit" dan **394 sampel (43%)** untuk kelas "sehat".
 
-![Distribusi Pasien dengan dan Tanpa Penyakit Jantung](https://imgur.com/40Alz6D)
+![Distribusi Target](https://github.com/user-attachments/assets/214cd1c7-ed7f-4237-8a04-4e01f4554998)
 
 #### Analisis Korelasi Fitur
 *Heatmap* korelasi menunjukkan bahwa fitur `cp`, `thalch`, dan `slope` memiliki korelasi positif yang kuat dengan target, sementara `thal`, `ca`, `oldpeak`, dan `exang` memiliki korelasi negatif yang kuat.
 
-![Heatmap Korelasi Antar Fitur](https://imgur.com/kVNNDUU)
+![Heatmap Fitur](https://github.com/user-attachments/assets/98c25945-ec49-4335-a701-307dacc6c197)
+
 
 #### Distribusi Fitur Numerik
 Histogram menunjukkan bahwa fitur `age` dan `trestbps` terdistribusi mendekati normal, sedangkan `oldpeak` sangat miring ke kanan (*right-skewed*).
 
-![Distribusi Fitur Numerik (age, trestbps, chol, thalach, oldpeak)](https://imgur.com/6D5RUmL)
+![Distribusi Fitur Numerik](https://github.com/user-attachments/assets/aa207fe0-8fb8-4987-ae9d-24feedf1e731)
 
 ## Modeling
 
 Tahap ini berfokus pada pelatihan, perbandingan, dan optimisasi model machine learning.
 
-### Perbandingan Model Awal
-Dua model awal dievaluasi untuk mendapatkan performa dasar:
-1.  **K-Nearest Neighbors (KNN)**: Model ini menghasilkan **F1-Score 0.87** untuk kelas positif.
-2.  **Random Forest**: Model ini menghasilkan **F1-Score 0.88** untuk kelas positif.
+### K-Nearest Neighbors (KNN)
 
-Berdasarkan perbandingan F1-Score dan Recall (0.90), **Random Forest dipilih sebagai model awal terbaik**.
+**Cara Kerja Algoritma**
+K-Nearest Neighbors (KNN) adalah algoritma *supervised learning* yang bekerja berdasarkan prinsip "kesamaan". Untuk mengklasifikasikan sebuah data baru, algoritma ini akan mencari 'K' jumlah tetangga terdekat dari data tersebut di dalam data latih, berdasarkan perhitungan jarak (misalnya, Jarak Euclidean atau Manhattan). Kelas dari data baru kemudian ditentukan oleh suara mayoritas (voting) dari kelas-kelas para tetangga terdekatnya.
 
-### Eksperimen Hyperparameter Tuning
-Sebagai bagian dari solusi, dilakukan eksperimen optimisasi pada model KNN menggunakan `GridSearchCV` untuk melihat apakah performanya dapat ditingkatkan hingga melampaui Random Forest.
-- **Parameter Terbaik Ditemukan**: `{'metric': 'manhattan', 'n_neighbors': 13, 'weights': 'uniform'}`.
-- **Hasil**: Model KNN yang telah di-tuning menghasilkan F1-Score **0.85** pada data uji.
+**Parameter dan Pelatihan Model Awal**
+Model KNN awal dilatih menggunakan parameter default dari library scikit-learn, dengan parameter utama yang ditetapkan secara eksplisit adalah:
+-   `n_neighbors=5`
 
-Hasil ini mengkonfirmasi bahwa proses tuning pada KNN tidak berhasil melampaui performa model Random Forest awal. Dengan demikian, **Random Forest** ditetapkan sebagai model final.
+**Kelebihan dan Kekurangan**
+-   **Kelebihan**:
+    -   Sederhana untuk dipahami dan diimplementasikan.
+    -   Tidak memerlukan asumsi tentang distribusi data (non-parametrik).
+    -   Efektif untuk data yang tidak terlalu besar.
+-   **Kekurangan**:
+    -   Sangat sensitif terhadap skala fitur, sehingga memerlukan *feature scaling*.
+    -   Biaya komputasi menjadi tinggi saat proses prediksi karena perlu menghitung jarak ke semua data latih.
+    -   Performa dapat menurun pada dataset dengan dimensi (jumlah fitur) yang sangat tinggi.
+
+Hasil evaluasi awal pada data uji menunjukkan model ini menghasilkan **F1-Score 0.87** untuk kelas positif.
+
+### Random Forest
+
+**Cara Kerja Algoritma**
+Random Forest adalah algoritma *ensemble learning* yang terdiri dari banyak *decision tree* (pohon keputusan). Prosesnya dimulai dengan membuat sejumlah besar pohon keputusan secara acak, di mana setiap pohon dilatih pada sampel data yang sedikit berbeda (teknik *bootstrap aggregating* atau *bagging*). Untuk membuat prediksi klasifikasi, setiap pohon di dalam "hutan" akan memberikan suaranya (voting), dan kelas dengan suara terbanyak akan menjadi hasil prediksi akhir dari model.
+
+**Parameter dan Pelatihan Model Awal**
+Model Random Forest awal dilatih dengan parameter berikut:
+-   `n_estimators=100` (jumlah pohon keputusan yang dibangun).
+-   `random_state=42` (untuk memastikan hasil yang dapat direproduksi).
+
+**Kelebihan dan Kekurangan**
+-   **Kelebihan**:
+    -   Memiliki akurasi yang tinggi dan cenderung sangat robust terhadap *overfitting*.
+    -   Dapat menangani data dalam jumlah besar dengan fitur yang banyak.
+    -   Mampu memberikan peringkat pentingnya setiap fitur (*feature importance*).
+-   **Kekurangan**:
+    -   Cenderung menjadi "black box", artinya proses pengambilan keputusannya lebih sulit diinterpretasikan dibandingkan satu decision tree.
+    -   Membutuhkan lebih banyak sumber daya komputasi dan waktu untuk melatih model karena membangun banyak pohon.
+
+Hasil evaluasi awal pada data uji menunjukkan model ini menghasilkan **F1-Score 0.88** untuk kelas positif.
+
+### Pemilihan Model dan Eksperimen Optimisasi
+
+**Pemilihan Model Terbaik**
+Berdasarkan perbandingan F1-Score awal (Random Forest: 0.88 vs. KNN: 0.87), **Random Forest dipilih sebagai model terbaik** karena menunjukkan performa yang sedikit lebih unggul.
+
+**Eksperimen Hyperparameter Tuning**
+Sebagai bagian dari *solution statement*, sebuah eksperimen optimisasi tetap dilakukan pada model KNN menggunakan `GridSearchCV` untuk melihat apakah performanya dapat ditingkatkan hingga melampaui Random Forest. 
+-   **Parameter Terbaik Ditemukan**: `{'metric': 'manhattan', 'n_neighbors': 13, 'weights': 'uniform'}`.
+-   **Hasil**: Model KNN yang telah di-tuning dievaluasi dan menghasilkan **F1-Score 0.85** pada data uji.
+
+Hasil eksperimen ini mengkonfirmasi bahwa proses tuning pada KNN tidak berhasil melampaui performa model Random Forest awal. Dengan demikian, **Random Forest** ditetapkan sebagai model final untuk dievaluasi lebih lanjut.
 
 ## Evaluation
 
@@ -114,13 +155,20 @@ Evaluasi final dilakukan pada model dengan performa terbaik, yaitu **model Rando
 
 ### Metrik Evaluasi
 - **Accuracy**: Rasio prediksi yang benar terhadap total data.
-  $$ \text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}} $$
+
+$$ \text{Accuracy} = \frac{\text{TP} + \text{TN}}{\text{TP} + \text{TN} + \text{FP} + \text{FN}} $$
+
 - **Precision**: Dari semua yang diprediksi sakit, berapa persen yang benar-benar sakit.
-  $$ \text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}} $$
+
+$$ \text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}} $$
+
 - **Recall (Sensitivity)**: Dari semua yang benar-benar sakit, berapa persen yang berhasil terdeteksi.
-  $$ \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}} $$
+
+$$ \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}} $$
+
 - **F1-Score**: Rata-rata harmonik dari Precision dan Recall.
-  $$ \text{F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} $$
+
+$$ \text{F1-Score} = 2 \times \frac{\text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}} $$
 
 ### Hasil Evaluasi Model Final
 Berikut adalah rekapitulasi hasil dari model **Random Forest** yang terpilih:
